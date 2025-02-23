@@ -136,11 +136,10 @@ export default function Home() {
         {icons.map((icon, index) => (
           <React.Fragment key={index}>
             <div
-              className={`w-10 h-10 flex items-center justify-center rounded-full border ${
-                index + 1 === currentStage
-                  ? "bg-[#4771F4] text-white border-[#4771F4]"
-                  : "bg-transparent text-[#4771F4] border-[#4771F4]"
-              }`}
+              className={`w-10 h-10 flex items-center justify-center rounded-full border ${index + 1 === currentStage
+                ? "bg-[#4771F4] text-white border-[#4771F4]"
+                : "bg-transparent text-[#4771F4] border-[#4771F4]"
+                }`}
             >
               {icon}
             </div>
@@ -154,7 +153,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-8 ">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -163,258 +162,259 @@ export default function Home() {
           rel="stylesheet"
         />
       </Head>
-      <div className="fixed inset-0 -z-50 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden w-full h-full" style={{ zIndex: 0 }}>
         {/* 绿色背景圈 */}
         <div
-          className="absolute left-[25%] top-[30%] w-[393px] h-[393px] rounded-full"
+          className="absolute left-[20%] top-[50%] w-[393px] h-[393px] rounded-full"
           style={{
-            backgroundColor: "rgba(204, 249, 197, 0.50)",
-            filter: "blur(100px) drop-shadow(0px 4px 169.4px #CCF9C5)"
+            backgroundColor: "rgba(204, 249, 197, 0.60)",
+            filter: "blur(100px) drop-shadow(0px 4px 169.4px #CCF9C5)",
+            zIndex: -1
           }}
         ></div>
 
         {/* 蓝色背景圈 */}
         <div
-          className="absolute left-[45%] top-[35%] w-[238px] h-[239px] rounded-full"
+          className="absolute left-[35%] top-[25%] w-[238px] h-[239px] rounded-full"
           style={{
-            backgroundColor: "rgba(71, 113, 244, 0.50)",
-            filter: "blur(100px) drop-shadow(0px 4px 169.4px #4771F4)"
+            backgroundColor: "rgba(71, 113, 244, 0.70)",
+            filter: "blur(100px) drop-shadow(0px 4px 169.4px #4771F4)",
+            zIndex: -1
           }}
         ></div>
       </div>
 
-      {stage === "entry" || stage === "loadingScript" ? (
-        <div
-          className={`flex flex-col sm:flex-row items-center justify-center transition-opacity duration-500 ${stage === "loadingScript" ? "opacity-0" : "opacity-100"
-            }`}
-        >
-          {/* Left side: title, subtitle, capsule tags */}
-          <div className="sm:w-1/2 mb-8 sm:mb-0">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-montserrat">
-              Turn Your Ideas into Videos with AI!
-            </h1>
-            <p className="text-lg mb-4">
-              Just type your idea, and AI will find the right clips, generate narration, and edit everything together—so you don't have to!
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "AI Scription",
-                "AI VoiceOver",
-                "One-Click Video",
-                "AI footage selection",
-                "AI auto-editing"
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 rounded-[239.717px] border-[0.799px] border-[#4771F4] text-[#4771F4] text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-          {/* Right side: white box with textarea and video length options */}
-          <div className="sm:w-1/2 bg-white/72 shadow-[0px_0px_36.473px_rgba(0,0,0,0.25)] backdrop-blur-[5.179px] rounded-lg flex-shrink-0 p-6">
-            <textarea
-              className="w-full h-40 p-2 border-b-[0.87px] border-[#D9D9D9] bg-transparent outline-none focus:border-[#4771F4] transition mb-6"
-              placeholder="Describe your video idea..."
-              value={videoDescription}
-              onChange={(e) => setVideoDescription(e.target.value)}
-            ></textarea>
-
-            <div className="flex items-center mb-4">
-              {["15s", "1m", "5min"].map((option) => (
-                <button
-                  key={option}
-                  className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoLength === option
-                      ? "bg-[#4771F4] text-white border-[#4771F4]"
-                      : "bg-transparent text-black border-[#4771F4]"
-                    }`}
-                  onClick={() => setVideoLength(option)}
-                >
-                  {option}
-                </button>
-              ))}
+      <div className="relative z-10 w-full flex justify-center">
+        {stage === "entry" || stage === "loadingScript" ? (
+          <div
+            className={`flex flex-col sm:flex-row items-start justify-between transition-opacity max-h-screen text-black duration-500 ${stage === "loadingScript" ? "opacity-0" : "opacity-100"
+              }`}
+          >
+            {/* Left Box */}
+            <div className="w-full sm:w-1/2 mb-8 sm:mb-0 pr-4 text-left flex flex-col justify-center pl-16" style={{ margin: 32, height: '100vh', display: 'flex', justifyContent: 'center' }}>
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-montserrat">
+                Turn Your Ideas into Videos with AI!
+              </h1>
+              <p className="text-lg mb-4">
+                Just type your idea, and AI will find the right clips, generate narration, and edit everything together—so you don't have to!
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["AI Scription", "AI VoiceOver", "One-Click Video", "AI footage selection", "AI auto-editing"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 rounded-[239.717px] border-[0.799px] border-[#4771F4] text-[#4771F4] text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <div className="flex items-center mb-4">
-              {["landscape", "portrait"].map((orientation) => (
-                <button
-                  key={orientation}
-                  className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoOrientation === orientation
-                      ? "bg-[#4771F4] text-white border-[#4771F4]"
-                      : "bg-transparent text-black border-[#4771F4]"
-                    }`}
-                  onClick={() => setVideoOrientation(orientation)}
-                >
-                  {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
-                </button>
-              ))}
-            </div>
+            {/* Right Box */}
+            <div className="w-full sm:w-1/2 p-32 flex items-center justify-center min-h-screen pb-48" style={{ margin: 32 }}>
+              {/* White Box */}
+              <div className="aspect-square bg-white shadow-[0px_0px_36.473px_rgba(0,0,0,0.25)] backdrop-blur-[5.179px] rounded-lg flex-shrink-0 p-6" style={{ height: '70vh', width: '70vh', transform: 'translateX(-20%)' }}>
+                <textarea
+                  className="w-full h-40 p-2 border-b-[0.87px] border-[#D9D9D9] bg-white outline-none focus:border-[#4771F4] transition mb-6"
+                  placeholder="Describe your video idea..."
+                  value={videoDescription}
+                  onChange={(e) => setVideoDescription(e.target.value)}
+                ></textarea>
 
-            <div className="flex justify-end">
-              <button
-                className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
-                onClick={handleGenerateScript}
-              >
-                Generate
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-      {stage === "loadingScript" && (
-        <div className="mt-8 flex flex-col items-center">
-          {/* Bot with Loading Animation */}
-          <div className="relative">
-            {/* Bot Icon */}
-            <Bot className="w-20 h-20 text-gray-900" />
-
-            {/* Spinner on Top Right */}
-            <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
-          </div>
-
-          {/* Loading Text */}
-          <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-            Generating script...
-          </p>
-        </div>
-      )}
-
-      {stage === "editScript" || stage === "loadingSplit" ? (
-        <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingSplit" ? "opacity-0" : "opacity-100"}`}>
-          <ProgressIndicator currentStage={1} />
-          <div className="bg-white p-6 rounded shadow max-w-3xl mx-auto">
-            <p className="text-lg font-medium text-gray-700 mb-4">
-              AI has generated a script for you—feel free to edit!
-            </p>
-            <textarea
-              className="w-full h-48 p-2 border rounded mb-4"
-              value={editedScript}
-              onChange={(e) => setEditedScript(e.target.value)}
-            ></textarea>
-            <div className="flex justify-end">
-              <button
-                className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
-                onClick={handleConfirmScript}
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {stage === "loadingSplit" && (
-        <div className="mt-8 flex flex-col items-center">
-          {/* Bot with Loading Animation */}
-          <div className="relative">
-            {/* Bot Icon */}
-            <Bot className="w-20 h-20 text-gray-900" />
-
-            {/* Spinner on Top Right  */}
-            <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
-          </div>
-
-          {/* Loading Text */}
-          <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-            Loading...
-          </p>
-        </div>
-      )}
-
-      {stage === "selectVoice" || stage === "loadingFinal" ? (
-        <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingFinal" ? "opacity-0" : "opacity-100"}`}>
-          <ProgressIndicator currentStage={2} />
-
-          <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">Pick the perfect AI voice to bring your video to life!</h2>
-              <p className="text-gray-600">Different voices create different moods. Choose the one that best fits your video style.</p>
-            </div>
-
-            <div className="space-y-4">
-              {voiceOptions.map((voice) => (
-                <div
-                  key={voice.name}
-                  className="flex items-center justify-between p-4 border rounded-lg shadow-sm transition hover:shadow-md"
-                >
-                  <div>
-                    <h3 className="text-lg font-semibold">{voice.name}</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {voice.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 rounded-full border border-[#4771F4] text-[#4771F4] text-xs"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-gray-600 text-sm mt-2">
-                      {voice.description}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
+                <div className="flex items-center mb-4">
+                  {["15s", "1m", "5min"].map((option) => (
                     <button
-                      className={`w-10 h-10 flex items-center justify-center rounded-full border transition ${
-                        selectedVoice === voice.id
+                      key={option}
+                      className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoLength === option
+                          ? "bg-[#4771F4] text-white border-[#4771F4]"
+                          : "bg-transparent text-black border-[#4771F4]"
+                        }`}
+                      onClick={() => setVideoLength(option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center mb-4">
+                  {["landscape", "portrait"].map((orientation) => (
+                    <button
+                      key={orientation}
+                      className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoOrientation === orientation
+                          ? "bg-[#4771F4] text-white border-[#4771F4]"
+                          : "bg-transparent text-black border-[#4771F4]"
+                        }`}
+                      onClick={() => setVideoOrientation(orientation)}
+                    >
+                      {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
+                    onClick={handleGenerateScript}
+                  >
+                    Generate
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+        {stage === "loadingScript" && (
+          <div className="mt-8 flex flex-col items-center">
+            {/* Bot with Loading Animation */}
+            <div className="relative">
+              {/* Bot Icon */}
+              <Bot className="w-20 h-20 text-gray-900" />
+
+              {/* Spinner on Top Right */}
+              <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+            </div>
+
+            {/* Loading Text */}
+            <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+              Generating script...
+            </p>
+          </div>
+        )}
+
+        {stage === "editScript" || stage === "loadingSplit" ? (
+          <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingSplit" ? "opacity-0" : "opacity-100"}`}>
+            <ProgressIndicator currentStage={1} />
+            <div className="bg-white p-6 rounded shadow max-w-3xl mx-auto">
+              <p className="text-lg font-medium text-gray-700 mb-4">
+                AI has generated a script for you—feel free to edit!
+              </p>
+              <textarea
+                className="w-full h-48 p-2 border rounded mb-4"
+                value={editedScript}
+                onChange={(e) => setEditedScript(e.target.value)}
+              ></textarea>
+              <div className="flex justify-end">
+                <button
+                  className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
+                  onClick={handleConfirmScript}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {stage === "loadingSplit" && (
+          <div className="mt-8 flex flex-col items-center">
+            {/* Bot with Loading Animation */}
+            <div className="relative">
+              {/* Bot Icon */}
+              <Bot className="w-20 h-20 text-gray-900" />
+
+              {/* Spinner on Top Right  */}
+              <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+            </div>
+
+            {/* Loading Text */}
+            <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+              Loading...
+            </p>
+          </div>
+        )}
+
+        {stage === "selectVoice" || stage === "loadingFinal" ? (
+          <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingFinal" ? "opacity-0" : "opacity-100"}`}>
+            <ProgressIndicator currentStage={2} />
+
+            <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold mb-2">Pick the perfect AI voice to bring your video to life!</h2>
+                <p className="text-gray-600">Different voices create different moods. Choose the one that best fits your video style.</p>
+              </div>
+
+              <div className="space-y-4">
+                {voiceOptions.map((voice) => (
+                  <div
+                    key={voice.name}
+                    className="flex items-center justify-between p-4 border rounded-lg shadow-sm transition hover:shadow-md"
+                  >
+                    <div>
+                      <h3 className="text-lg font-semibold">{voice.name}</h3>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {voice.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2 py-1 rounded-full border border-[#4771F4] text-[#4771F4] text-xs"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-gray-600 text-sm mt-2">
+                        {voice.description}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <button
+                        className={`w-10 h-10 flex items-center justify-center rounded-full border transition ${selectedVoice === voice.id
                           ? "bg-[#4771F4] text-white border-[#4771F4]"
                           : "bg-white text-[#4771F4] border-[#4771F4]"
-                      }`}
-                      onClick={() => setSelectedVoice(voice.id)}
-                    >
-                      ✔
-                    </button>
+                          }`}
+                        onClick={() => setSelectedVoice(voice.id)}
+                      >
+                        ✔
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="flex justify-end mt-6">
-              <button
-                className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
-                onClick={handleGenerateVideo}
-              >
-                Generate
-              </button>
+              <div className="flex justify-end mt-6">
+                <button
+                  className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
+                  onClick={handleGenerateVideo}
+                >
+                  Generate
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      {stage === "loadingFinal" && (
-        <div className="mt-8 flex flex-col items-center">
-          {/* Bot with Loading Animation */}
-          <div className="relative">
-            {/* Bot Icon */}
-            <Bot className="w-20 h-20 text-gray-900" />
+        {stage === "loadingFinal" && (
+          <div className="mt-8 flex flex-col items-center">
+            {/* Bot with Loading Animation */}
+            <div className="relative">
+              {/* Bot Icon */}
+              <Bot className="w-20 h-20 text-gray-900" />
 
-            {/* Spinner on Top Right  */}
-            <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+              {/* Spinner on Top Right  */}
+              <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+            </div>
+
+            {/* Loading Text */}
+            <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+              Loading Final Video...
+            </p>
           </div>
+        )}
 
-          {/* Loading Text */}
-          <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-            Loading Final Video...
-          </p>
-        </div>
-      )}
-
-      {stage === "result" && (
-        <div className="mt-8 text-center">
-          <ProgressIndicator currentStage={3} />
-          <h2 className="text-2xl font-bold mb-4">Your video is ready!</h2>
-          <a
-            href={finalVideoUrl}
-            download
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          >
-            Download Video
-          </a>
-        </div>
-      )}
+        {stage === "result" && (
+          <div className="mt-8 text-center">
+            <ProgressIndicator currentStage={3} />
+            <h2 className="text-2xl font-bold mb-4">Your video is ready!</h2>
+            <a
+              href={finalVideoUrl}
+              download
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              Download Video
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
