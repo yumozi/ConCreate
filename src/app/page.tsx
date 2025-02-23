@@ -71,7 +71,7 @@ const StageLayout = ({ currentStage, children }: { currentStage: number, childre
 
 export default function Home() {
   // stage can be: "entry", "loadingScript", "editScript", "loadingScript", "selectVoice", "loadingFinal", "result"
-  const [stage, setStage] = useState("entry");
+  const [stage, setStage] = useState("selectVoice");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
   const [videoOrientation, setVideoOrientation] = useState("landscape"); // options: "landscape", "portrait"
@@ -362,7 +362,7 @@ export default function Home() {
               <a
                 href={finalVideoUrl}
                 download
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                 className="w-[158.425px] h-[49.617px] rounded-[174.09px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition flex items-center justify-center"
               >
                 Download Video
               </a>
