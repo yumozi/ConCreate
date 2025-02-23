@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import Head from "next/head";
-import { FileText, AudioLines, Video,CheckCircle, Clock, Play } from "lucide-react";
+import { FileText, AudioLines, Bot,Loader2, Video,CheckCircle, Clock, Play } from "lucide-react";
 
 const voiceOptions = [
   { id: "nPczCjzI2devNBz1zQrb", name: "Voice 1" },
@@ -12,7 +12,7 @@ const voiceOptions = [
 
 export default function Home() {
   // stage can be: "entry", "loadingScript", "editScript", "loadingSplit", "selectVoice", "loadingFinal", "result"
-  const [stage, setStage] = useState("entry");
+  const [stage, setStage] = useState("loadingScript");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
   const [videoOrientation, setVideoOrientation] = useState("landscape"); // options: "landscape", "portrait"
@@ -154,6 +154,7 @@ export default function Home() {
         style={{ 
           backgroundColor: "rgba(71, 113, 244, 0.50)", 
           filter: "blur(100px) drop-shadow(0px 4px 169.4px #4771F4)"
+
         }}
       ></div>
     </div>
@@ -248,13 +249,24 @@ export default function Home() {
           </div>
         </div>
       ) : null}
+{stage === "loadingScript" && (
+  <div className="mt-8 flex flex-col items-center">
+    {/* Bot with Loading Animation */}
+    <div className="relative">
+      {/* Bot Icon */}
+      <Bot className="w-20 h-20 text-gray-900" />
 
-      {stage === "loadingScript" && (
-        <div className="mt-8">
-          <Spinner />
-          <p className="text-center mt-4">Generating script...</p>
-        </div>
-      )}
+      {/* Spinner on Top Right */}
+      <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+    </div>
+
+    {/* Loading Text */}
+    <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+      Generating script...
+    </p>
+  </div>
+)}
+
 
       {stage === "editScript" || stage === "loadingSplit" ? (
         <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingSplit" ? "opacity-0" : "opacity-100"}`}>
@@ -282,11 +294,25 @@ export default function Home() {
       ) : null}
 
       {stage === "loadingSplit" && (
-        <div className="mt-8">
-          <Spinner />
-          <p className="text-center mt-4">Splitting script into segments...</p>
+       
+        <div className="mt-8 flex flex-col items-center">
+          {/* Bot with Loading Animation */}
+          <div className="relative">
+            {/* Bot Icon */}
+            <Bot className="w-20 h-20 text-gray-900" />
+      
+            {/* Spinner on Top Right  */}
+            <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+          </div>
+      
+          {/* Loading Text */}
+          <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+            Loading...
+          </p>
         </div>
       )}
+      
+      
 
 {stage === "selectVoice" || stage === "loadingFinal" ? (
   <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingFinal" ? "opacity-0" : "opacity-100"}`}>
@@ -360,10 +386,21 @@ export default function Home() {
 
 
       {stage === "loadingFinal" && (
-        <div className="mt-8">
-          <Spinner />
-          <p className="text-center mt-4">Generating audio-visual content...</p>
-        </div>
+      <div className="mt-8 flex flex-col items-center">
+      {/* Bot with Loading Animation */}
+      <div className="relative">
+        {/* Bot Icon */}
+        <Bot className="w-20 h-20 text-gray-900" />
+  
+        {/* Spinner on Top Right  */}
+        <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
+      </div>
+  
+      {/* Loading Text */}
+      <p className="text-center mt-4 text-lg font-semibold text-gray-700">
+        Loading Final Video...
+      </p>
+    </div>
       )}
 
       {stage === "result" && (
