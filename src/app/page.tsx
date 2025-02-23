@@ -30,8 +30,47 @@ const voiceOptions = [
   }
 ];
 
+const ProgressIndicator = ({ currentStage }: { currentStage: number }) => {
+  const icons = [
+    <FileText size={22} strokeWidth={1.2} key="file-text" />, 
+    <AudioLines size={22} strokeWidth={1.2} key="audio-lines" />, 
+    <Video size={22} strokeWidth={1.2} key="video" />
+  ];
+
+  return (
+    <div className="flex items-center justify-center mb-8">
+      {icons.map((icon, index) => (
+        <React.Fragment key={index}>
+          <div
+            className={`w-10 h-10 flex items-center justify-center rounded-full border ${index + 1 === currentStage
+              ? "bg-[#4771F4] text-white border-[#4771F4]"
+              : "bg-transparent text-[#4771F4] border-[#4771F4]"
+              }`}
+          >
+            {icon}
+          </div>
+          {index !== 2 && (
+            <div className="w-10 h-[1.5px] bg-[#4771F4] mx-2"></div>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
+const StageLayout = ({ currentStage, children }: { currentStage: number, children: React.ReactNode }) => (
+  <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="w-full flex items-center justify-center" style={{ height: '20%' }}>
+      <ProgressIndicator currentStage={currentStage} />
+    </div>
+    <div className="w-full flex-grow flex flex-col items-center justify-start" style={{ height: '80%' }}>
+      {children}
+    </div>
+  </div>
+);
+
 export default function Home() {
-  // stage can be: "entry", "loadingScript", "editScript", "loadingSplit", "selectVoice", "loadingFinal", "result"
+  // stage can be: "entry", "loadingScript", "editScript", "loadingScript", "selectVoice", "loadingFinal", "result"
   const [stage, setStage] = useState("entry");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
@@ -41,28 +80,6 @@ export default function Home() {
   const [splitParts, setSplitParts] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(voiceOptions[0].id);
   const [finalVideoUrl, setFinalVideoUrl] = useState("");
-
-  // Utility: simple spinner component
-  const Spinner = () => (
-    <div className="flex justify-center items-center">
-      <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24">
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v8z"
-        ></path>
-      </svg>
-    </div>
-  );
-
   // Handler for stage 1 (Generate script)
   const handleGenerateScript = async () => {
     if (!videoDescription) return;
@@ -123,35 +140,6 @@ export default function Home() {
     }
   };
 
-  // Render progress indicator icons (three stages) with a highlighted step
-  const ProgressIndicator = ({ currentStage }: { currentStage: number }) => {
-    const icons = [
-      <FileText size={22} strokeWidth={1.2} key="file-text" />,
-      <AudioLines size={22} strokeWidth={1.2} key="audio-lines" />,
-      <Video size={22} strokeWidth={1.2} key="video" />
-    ];
-
-    return (
-      <div className="flex items-center justify-center mb-8">
-        {icons.map((icon, index) => (
-          <React.Fragment key={index}>
-            <div
-              className={`w-10 h-10 flex items-center justify-center rounded-full border ${index + 1 === currentStage
-                ? "bg-[#4771F4] text-white border-[#4771F4]"
-                : "bg-transparent text-[#4771F4] border-[#4771F4]"
-                }`}
-            >
-              {icon}
-            </div>
-            {index !== 2 && (
-              <div className="w-10 h-[1.5px] bg-[#4771F4] mx-2"></div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-white overflow-hidden">
       <Head>
@@ -185,10 +173,9 @@ export default function Home() {
       </div>
 
       <div className="relative z-10 w-full flex justify-center">
-        {stage === "entry" || stage === "loadingScript" ? (
+        {stage === "entry" ? (
           <div
-            className={`flex flex-col sm:flex-row items-start justify-between transition-opacity max-h-screen text-black duration-500 ${stage === "loadingScript" ? "opacity-0" : "opacity-100"
-              }`}
+            className={`flex flex-col sm:flex-row items-start justify-between transition-opacity max-h-screen text-black duration-500`}
           >
             {/* Left Box */}
             <div className="w-full sm:w-1/2 mb-8 sm:mb-0 pr-4 text-left flex flex-col justify-center pl-32 font-sans h-screen pb-16">
@@ -196,7 +183,7 @@ export default function Home() {
                 Turn Your Ideas into Videos with AI!
               </h1>
               <p className="text-xl mb-8 pr-8">
-                Our AI Agent will craft a natural narration, curate the perfect clips, and seamlessly edit them together to bring your video to life in minutes.
+                Share your idea, and let our AI work its magic! We'll carefully curate the perfect clips, craft a natural narration, and seamlessly edit them together to bring your vision to life.
               </p>
               <div className="flex flex-wrap gap-2 pr-16">
                 {["AI Scriptwriting", "AI VoiceOver", "Instant Video Production", "Automated Footage Curation", "Smart Video Editing"].map((tag) => (
@@ -268,37 +255,32 @@ export default function Home() {
             </div>
           </div>
         ) : null}
-        {stage === "loadingScript" && (
-          <div className="mt-8 flex flex-col items-center">
-            {/* Bot with Loading Animation */}
+        {(stage === "loadingScript" || stage === "loadingSplit" || stage === "loadingFinal") && (
+          <div className="flex flex-col items-center justify-center min-h-screen">
             <div className="relative">
-              {/* Bot Icon */}
               <Bot className="w-20 h-20 text-gray-900" />
-
-              {/* Spinner on Top Right */}
               <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
             </div>
-
-            {/* Loading Text */}
             <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-              Generating script...
+              {stage === "loadingScript" && "Generating script..."}
+              {stage === "loadingSplit" && "Processing script..."}
+              {stage === "loadingFinal" && "Generating final video..."}
             </p>
           </div>
         )}
 
-        {stage === "editScript" || stage === "loadingSplit" ? (
-          <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingSplit" ? "opacity-0" : "opacity-100"}`}>
-            <ProgressIndicator currentStage={1} />
-            <div className="bg-white p-6 rounded shadow max-w-3xl mx-auto">
+        {stage === "editScript" && (
+          <StageLayout currentStage={1}>
+            <div className="bg-white p-8 rounded-lg shadow-lg mx-auto flex-grow flex flex-col justify-between mb-32" style={{ height: '50%', width: '50vw' }}>
               <p className="text-lg font-medium text-gray-700 mb-4">
-                AI has generated a script for you—feel free to edit!
+                AI has generated a script for you. Please feel free to edit it as needed.
               </p>
               <textarea
-                className="w-full h-48 p-2 border rounded mb-4"
+                className="w-full flex-grow p-4 border rounded mb-4 resize-none text-gray-600"
                 value={editedScript}
                 onChange={(e) => setEditedScript(e.target.value)}
               ></textarea>
-              <div className="flex justify-end">
+              <div className="flex justify-end mt-auto">
                 <button
                   className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
                   onClick={handleConfirmScript}
@@ -307,42 +289,21 @@ export default function Home() {
                 </button>
               </div>
             </div>
-          </div>
-        ) : null}
-
-        {stage === "loadingSplit" && (
-          <div className="mt-8 flex flex-col items-center">
-            {/* Bot with Loading Animation */}
-            <div className="relative">
-              {/* Bot Icon */}
-              <Bot className="w-20 h-20 text-gray-900" />
-
-              {/* Spinner on Top Right  */}
-              <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
-            </div>
-
-            {/* Loading Text */}
-            <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-              Loading...
-            </p>
-          </div>
+          </StageLayout>
         )}
 
-        {stage === "selectVoice" || stage === "loadingFinal" ? (
-          <div className={`mt-8 transition-opacity duration-500 ${stage === "loadingFinal" ? "opacity-0" : "opacity-100"}`}>
-            <ProgressIndicator currentStage={2} />
-
-            <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        {stage === "selectVoice" && (
+          <StageLayout currentStage={2}>
+            <div className="bg-white p-8 rounded-lg shadow-lg mx-auto flex-grow flex flex-col justify-between mb-32 text-black" style={{ height: '50%', width: '50vw' }}>
               <div className="mb-6">
-                <h2 className="text-xl font-bold mb-2">Pick the perfect AI voice to bring your video to life!</h2>
-                <p className="text-gray-600">Different voices create different moods. Choose the one that best fits your video style.</p>
+                <h2 className="text-xl font-bold mb-2">Pick the perfect voice to bring your video to life!</h2>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 flex-grow">
                 {voiceOptions.map((voice) => (
                   <div
                     key={voice.name}
-                    className="flex items-center justify-between p-4 border rounded-lg shadow-sm transition hover:shadow-md"
+                    className="flex items-center justify-between p-2 border rounded-lg shadow-sm transition hover:shadow-md"
                   >
                     <div>
                       <h3 className="text-lg font-semibold">{voice.name}</h3>
@@ -376,7 +337,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-4">
                 <button
                   className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
                   onClick={handleGenerateVideo}
@@ -385,39 +346,28 @@ export default function Home() {
                 </button>
               </div>
             </div>
-          </div>
-        ) : null}
-
-        {stage === "loadingFinal" && (
-          <div className="mt-8 flex flex-col items-center">
-            {/* Bot with Loading Animation */}
-            <div className="relative">
-              {/* Bot Icon */}
-              <Bot className="w-20 h-20 text-gray-900" />
-
-              {/* Spinner on Top Right  */}
-              <Loader2 className="absolute -top-2 right-0 w-6 h-6 text-blue-500 animate-spin" />
-            </div>
-
-            {/* Loading Text */}
-            <p className="text-center mt-4 text-lg font-semibold text-gray-700">
-              Loading Final Video...
-            </p>
-          </div>
+          </StageLayout>
         )}
 
         {stage === "result" && (
-          <div className="mt-8 text-center">
-            <ProgressIndicator currentStage={3} />
-            <h2 className="text-2xl font-bold mb-4">Your video is ready!</h2>
-            <a
-              href={finalVideoUrl}
-              download
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-            >
-              Download Video
-            </a>
-          </div>
+          <StageLayout currentStage={3}>
+            <div className="bg-white p-8 rounded-lg shadow-lg mx-auto flex-grow flex flex-col justify-between items-center mb-32 text-black" style={{ height: '50%', width: '50vw' }}>
+              <h2 className="text-2xl font-bold mb-4 text-center">Your video is ready!</h2>
+              <div className="flex-grow flex items-center justify-center">
+                <video controls className="mb-4" style={{ maxHeight: '500px', maxWidth: '90%' }}>
+                  <source src={finalVideoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <a
+                href={finalVideoUrl}
+                download
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+              >
+                Download Video
+              </a>
+            </div>
+          </StageLayout>
         )}
       </div>
     </div>
