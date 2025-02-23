@@ -153,7 +153,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-white overflow-hidden">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -191,18 +191,18 @@ export default function Home() {
               }`}
           >
             {/* Left Box */}
-            <div className="w-full sm:w-1/2 mb-8 sm:mb-0 pr-4 text-left flex flex-col justify-center pl-16" style={{ margin: 32, height: '100vh', display: 'flex', justifyContent: 'center' }}>
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-montserrat">
+            <div className="w-full sm:w-1/2 mb-8 sm:mb-0 pr-4 text-left flex flex-col justify-center pl-32 font-sans h-screen pb-16">
+              <h1 className="text-3xl sm:text-6xl font-semibold mb-8">
                 Turn Your Ideas into Videos with AI!
               </h1>
-              <p className="text-lg mb-4">
-                Just type your idea, and AI will find the right clips, generate narration, and edit everything together—so you don't have to!
+              <p className="text-xl mb-8 pr-8">
+                Our AI Agent will craft a natural narration, curate the perfect clips, and seamlessly edit them together to bring your video to life in minutes.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {["AI Scription", "AI VoiceOver", "One-Click Video", "AI footage selection", "AI auto-editing"].map((tag) => (
+              <div className="flex flex-wrap gap-2 pr-16">
+                {["AI Scriptwriting", "AI VoiceOver", "Instant Video Production", "Automated Footage Curation", "Smart Video Editing"].map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 rounded-[239.717px] border-[0.799px] border-[#4771F4] text-[#4771F4] text-sm"
+                    className="px-3 py-1 rounded-[239.717px] border-[0.799px] border-[#4771F4] text-[#4771F4] text-lg"
                   >
                     {tag}
                   </span>
@@ -211,47 +211,52 @@ export default function Home() {
             </div>
 
             {/* Right Box */}
-            <div className="w-full sm:w-1/2 p-32 flex items-center justify-center min-h-screen pb-48" style={{ margin: 32 }}>
+            <div className="w-full sm:w-1/2 p-32 flex items-center justify-center min-h-screen pb-32" style={{ margin: 32 }}>
               {/* White Box */}
-              <div className="aspect-square bg-white shadow-[0px_0px_36.473px_rgba(0,0,0,0.25)] backdrop-blur-[5.179px] rounded-lg flex-shrink-0 p-6" style={{ height: '70vh', width: '70vh', transform: 'translateX(-20%)' }}>
+              <div className="aspect-square bg-white shadow-[0px_0px_36.473px_rgba(0,0,0,0.25)] backdrop-blur-[5.179px] rounded-lg flex-shrink-0 p-6 flex flex-col justify-between" style={{ height: '70vh', width: '70vh', transform: 'translateX(-20%)' }}>
                 <textarea
-                  className="w-full h-40 p-2 border-b-[0.87px] border-[#D9D9D9] bg-white outline-none focus:border-[#4771F4] transition mb-6"
+                  className="w-full h-2/3 p-2 border-b-[0.87px] border-[#D9D9D9] bg-white outline-none focus:border-[#4771F4] transition mb-6"
+                  style={{ resize: 'none' }}
                   placeholder="Describe your video idea..."
                   value={videoDescription}
                   onChange={(e) => setVideoDescription(e.target.value)}
                 ></textarea>
 
-                <div className="flex items-center mb-4">
-                  {["15s", "1m", "5min"].map((option) => (
-                    <button
-                      key={option}
-                      className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoLength === option
-                          ? "bg-[#4771F4] text-white border-[#4771F4]"
-                          : "bg-transparent text-black border-[#4771F4]"
-                        }`}
-                      onClick={() => setVideoLength(option)}
-                    >
-                      {option}
-                    </button>
-                  ))}
+                <div className="flex flex-col">
+                  <div className="flex items-center mb-4">
+                    <span className="text-md mr-4">Video Length</span>
+                    {["15s", "1m", "5min"].map((option) => (
+                      <button
+                        key={option}
+                        className={`mr-2 px-4 py-1 rounded-[174.09px] border-[0.87px] transition ${videoLength === option
+                            ? "bg-[#4771F4] text-white border-[#4771F4]"
+                            : "bg-transparent text-black border-[#4771F4]"
+                          }`}
+                        onClick={() => setVideoLength(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center mb-4">
+                    <span className="text-md mr-4">Video Orientation</span>
+                    {["landscape", "portrait"].map((orientation) => (
+                      <button
+                        key={orientation}
+                        className={`mr-2 px-4 py-1 rounded-[174.09px] border-[0.87px] transition ${videoOrientation === orientation
+                            ? "bg-[#4771F4] text-white border-[#4771F4]"
+                            : "bg-transparent text-black border-[#4771F4]"
+                          }`}
+                        onClick={() => setVideoOrientation(orientation)}
+                      >
+                        {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex items-center mb-4">
-                  {["landscape", "portrait"].map((orientation) => (
-                    <button
-                      key={orientation}
-                      className={`mr-4 px-6 py-2 rounded-[174.09px] border-[0.87px] transition ${videoOrientation === orientation
-                          ? "bg-[#4771F4] text-white border-[#4771F4]"
-                          : "bg-transparent text-black border-[#4771F4]"
-                        }`}
-                      onClick={() => setVideoOrientation(orientation)}
-                    >
-                      {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-auto">
                   <button
                     className="w-[158.425px] h-[49.617px] rounded-[174.094px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition"
                     onClick={handleGenerateScript}
