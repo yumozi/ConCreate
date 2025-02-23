@@ -12,7 +12,7 @@ const voiceOptions = [
 
 export default function Home() {
   // stage can be: "entry", "loadingScript", "editScript", "loadingSplit", "selectVoice", "loadingFinal", "result"
-  const [stage, setStage] = useState("loadingScript");
+  const [stage, setStage] = useState("entry");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
   const [videoOrientation, setVideoOrientation] = useState("landscape"); // options: "landscape", "portrait"
