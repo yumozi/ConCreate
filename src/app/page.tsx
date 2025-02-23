@@ -71,7 +71,7 @@ const StageLayout = ({ currentStage, children }: { currentStage: number, childre
 
 export default function Home() {
   // stage can be: "entry", "loadingScript", "editScript", "loadingScript", "selectVoice", "loadingFinal", "result"
-  const [stage, setStage] = useState("selectVoice");
+  const [stage, setStage] = useState("entry");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
   const [videoOrientation, setVideoOrientation] = useState("landscape"); // options: "landscape", "portrait"
