@@ -19,6 +19,8 @@ export async function POST(req: Request) {
     ===
     Part n content.... (QUERY)Query for part n
     """
+
+    Do not include any other text in your response, just the parts and queries in the format above.
     
     The script is: ${script}`;
 
@@ -30,9 +32,20 @@ export async function POST(req: Request) {
       max_tokens: 3000,
     });
 
-    console.log(response.choices[0].message.content);
-    
-    const parts = response.choices[0].message.content?.trim().split('===').map(part => {
+    let responseContent = response.choices[0].message.content?.trim() || "";
+
+    // Remove everything before the first ``` if present
+    const firstCodeBlockIndex = responseContent.indexOf("```");
+    if (firstCodeBlockIndex !== -1) {
+        responseContent = responseContent.slice(firstCodeBlockIndex + 3).trim();
+    }
+
+    // Remove ```plaintext and ``` markers
+    responseContent = responseContent.replace(/```plaintext/g, "").replace(/```markdown/g, "").replace(/```/g, "").replace(/"""/g, "").trim();
+
+    console.log(responseContent);
+
+    const parts = responseContent.split('===').map(part => {
       const [text, query] = part.split('(QUERY)');
       return { text: text.trim(), query: query.trim() };
     }) || [];

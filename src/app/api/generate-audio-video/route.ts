@@ -41,6 +41,8 @@ export async function POST(req: Request) {
                 model_id: "eleven_multilingual_v2",
             }) as AudioResponse;
 
+            console.log("Received audio.");
+
             const audioBase64 = audioResponse.audio_base64; // Assuming audio is returned as a Base64 string
             if (!audioBase64) {
                 throw new Error(`Failed to generate audio for part: ${part.text}`);
@@ -53,12 +55,16 @@ export async function POST(req: Request) {
             }
             const audioDuration = alignment.character_end_times_seconds[alignment.character_end_times_seconds.length - 1];
 
+            console.log("Audio duration: ", audioDuration);
+
             // Search for stock videos using Pexels
             const videoResponse = await pexelsClient.videos.search({ query: part.query, per_page: 5, orientation: videoOrientation });
 
             if (!('videos' in videoResponse) || videoResponse.videos.length === 0) {
                 throw new Error(`No videos found for query: ${part.query}`);
             }
+
+            console.log("Found videos: ", videoResponse.videos.length);
 
             let totalVideoDuration = 0;
             const selectedVideos = [];
@@ -101,6 +107,15 @@ export async function POST(req: Request) {
                         .setStartTime(0)
                         .setDuration(allocatedDuration)
                         .videoFilters(scaleFilter)
+                        .outputOptions([
+                            '-c:v', 'libx264',  // Use H.264 codec
+                            '-preset', 'fast',  // Use a fast preset for encoding
+                            '-crf', '23',       // Set the quality level
+                            '-c:a', 'aac',      // Use AAC codec for audio
+                            '-b:a', '192k',     // Set audio bitrate
+                            '-vf', scaleFilter, // Apply scaling filter
+                            '-r', '30',         // Set frame rate to 30 fps
+                        ])
                         .output(trimmedFile)
                         .on('end', resolve)
                         .on('error', reject)
@@ -108,6 +123,7 @@ export async function POST(req: Request) {
                 });
                 trimmedVideoPaths.push(trimmedFile);
             }
+            console.log("Trimmed all videos");
 
             // Concatenate the trimmed videos using ffmpeg's concat demuxer
             const fileListPath = path.join(tempDir, 'filelist.txt');
@@ -125,48 +141,81 @@ export async function POST(req: Request) {
                     .run();
             });
 
+            console.log("Concatenated all videos");
+
+            // Remove audio from the concatenated video
+            const noAudioPath = path.join(tempDir, 'no_audio.mp4');
+            await new Promise<void>((resolve, reject) => {
+                ffmpeg(concatenatedPath)
+                    .outputOptions(['-an']) // Remove audio
+                    .output(noAudioPath)
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .run();
+            });
+
+            console.log("Removed audio from concatenated video");
+
             // Decode the audio Base64 string and write it to an mp3 file
             const audioFilePath = path.join(tempDir, 'audio.mp3');
             const audioBuffer = Buffer.from(audioBase64, 'base64');
             await fsPromises.writeFile(audioFilePath, audioBuffer);
 
-            // Merge the concatenated video with the audio track
+            console.log("Decoded audio");
+
+            // Merge the no-audio video with the audio track, applying audio padding
             const partFinalPath = path.join(tempDir, 'part_final.mp4');
             await new Promise<void>((resolve, reject) => {
-                ffmpeg(concatenatedPath)
+                ffmpeg(noAudioPath)
                     .input(audioFilePath)
-                    .outputOptions(['-c', 'copy', '-shortest'])
+                    .outputOptions([     // Pad the audio stream so it matches the video duration
+                        '-c:v', 'copy',          // Copy the video stream without re-encoding
+                        '-c:a', 'aac',           // Re-encode the audio to AAC (or choose another codec as needed)
+                        '-shortest',             // Ensure the output is trimmed to the shortest stream
+                        '-avoid_negative_ts', 'make_zero',  // Force non-negative timestamps
+                        '-fflags', '+genpts'     // Regenerate presentation timestamps
+                    ])
                     .output(partFinalPath)
                     .on('end', resolve)
                     .on('error', reject)
                     .run();
             });
 
+            console.log("Merged no-audio video with audio track");
+
             // Push the final processed segment for this part
             videoSegments.push(partFinalPath);
             console.log("Processed part location: ", partFinalPath);
         }
-
+        
         // Concatenate all part video segments together
-        const finalTempDir = path.join(os.tmpdir(), `final-video-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`);
-        await fsPromises.mkdir(finalTempDir, { recursive: true });
+        const publicDir = path.join(process.cwd(), 'public', 'videos');
+        await fsPromises.mkdir(publicDir, { recursive: true });
 
         const finalFileList = videoSegments.map(v => `file '${v}'`).join('\n');
-        const finalListPath = path.join(finalTempDir, 'final_filelist.txt');
+        const finalListPath = path.join(publicDir, 'final_filelist.txt');
         await fsPromises.writeFile(finalListPath, finalFileList);
-        const finalVideoPath = path.join(finalTempDir, 'final_video.mp4');
+        const finalVideoPath = path.join(publicDir, 'final_video.mp4');
+        const finalScaleFilter = videoOrientation === "landscape" ? "scale=1280:720" : "scale=720:1280";
         await new Promise<void>((resolve, reject) => {
             ffmpeg()
                 .input(finalListPath)
                 .inputOptions(['-f', 'concat', '-safe', '0'])
-                .outputOptions(['-c', 'copy'])
+                .videoFilters(finalScaleFilter)
+                .outputOptions(['-fflags', '+genpts', '-c:v', 'libx264', '-crf', '23', '-preset', 'fast'])
                 .output(finalVideoPath)
                 .on('end', resolve)
                 .on('error', reject)
                 .run();
         });
 
-        const finalVideoUrl = `file://${finalVideoPath}`;
+        // Clean up intermediate files
+        for (const segment of videoSegments) {
+            await fsPromises.unlink(segment);
+        }
+        await fsPromises.unlink(finalListPath);
+
+        const finalVideoUrl = `/videos/final_video.mp4`;
 
         return NextResponse.json({ videoUrl: finalVideoUrl });
     } catch (error) {
