@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const mapping: Record<string, number> = { "15s": 50, "1m": 200, "5min": 1000 };
     const wordCount = mapping[videoLength] || 50;
 
-    const prompt = `Generate a natural-sounding script for a YouTube video that is around ${wordCount} words, the description is: ${description}`;
+    const prompt = `Generate a natural-sounding script for a YouTube video that is around ${wordCount} words. The script should purely be what the narrator should say, exactly as they would say it, without any other formatting or instructions. (No "plaintext" either) Assume there will be stock videos in the background playing, their content will be relevant to but not exactly the same as the script. The description is: ${description}`;
 
     const response = await openai.chat.completions.create({
         model: "gpt-4o",

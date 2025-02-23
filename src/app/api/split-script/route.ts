@@ -1,19 +1,45 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 export async function POST(req: Request) {
-    try {
-        const { script } = await req.json();
-        // In a real implementation, you would call GPT-4 with a prompt to split the script into many segments.
-        // Each segment should be roughly 10-30 words with full sentences and include a concise stock video search query.
-        // Here we simulate a delay and return 3 dummy parts.
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        const parts = [
-            { text: "This is the first part of the script.", query: "Ocean" },
-            { text: "This is the second part with some insights.", query: "Cityscape" },
-            { text: "This is the final part wrapping up the ideas.", query: "Sunset" }
-        ];
-        return NextResponse.json({ parts });
-    } catch (error) {
-        console.error("Error in split-script:", error);
-        return NextResponse.error();
-    }
+  try {
+    const { script } = await req.json();
+
+    const prompt = `Split the following video script into parts, each part should be 10-30 words, have a somewhat clear semantic focus so that a stock video can be used as the background. Make sure parts don't cut any sentences mid-sentence. After the part, suggest a concise search query for a stock video fitting for that part. (i.e. "man in suit"). You should return in the format of 
+    """
+    Part 1 content.... (QUERY)Query for part 1
+    ===
+    Part 2 content.... (QUERY)Query for part 2
+    ===
+    ...
+    ===
+    Part n content.... (QUERY)Query for part n
+    """
+    
+    The script is: ${script}`;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        { "role": "user", "content": prompt }
+      ],
+      max_tokens: 3000,
+    });
+
+    console.log(response.choices[0].message.content);
+    
+    const parts = response.choices[0].message.content?.trim().split('===').map(part => {
+      const [text, query] = part.split('(QUERY)');
+      return { text: text.trim(), query: query.trim() };
+    }) || [];
+
+    return NextResponse.json({ parts });
+  } catch (error) {
+    console.error("Error in split-script:", error);
+    return NextResponse.error();
+  }
 }

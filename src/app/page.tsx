@@ -13,6 +13,7 @@ export default function Home() {
   const [stage, setStage] = useState("entry");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoLength, setVideoLength] = useState("15s"); // options: "15s", "1m", "5min"
+  const [videoOrientation, setVideoOrientation] = useState("landscape"); // options: "landscape", "portrait"
   const [generatedScript, setGeneratedScript] = useState("");
   const [editedScript, setEditedScript] = useState("");
   const [splitParts, setSplitParts] = useState([]);
@@ -85,7 +86,7 @@ export default function Home() {
       const res = await fetch("/api/generate-audio-video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voiceId: selectedVoice, parts: splitParts })
+        body: JSON.stringify({ voiceId: selectedVoice, parts: splitParts, videoOrientation: videoOrientation })
       });
       const data = await res.json();
       setFinalVideoUrl(data.videoUrl);
@@ -135,7 +136,7 @@ export default function Home() {
               Turn Your Ideas into Videos with AI!
             </h1>
             <p className="text-lg mb-4">
-              Just type your idea, and AI will find the right clips, generate narration, and edit everything together—so you don’t have to!
+              Just type your idea, and AI will find the right clips, generate narration, and edit everything together—so you don't have to!
             </p>
             <div className="flex flex-wrap gap-2">
               {[
@@ -172,6 +173,19 @@ export default function Home() {
                   onClick={() => setVideoLength(option)}
                 >
                   {option}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center mb-4">
+              {["landscape", "portrait"].map((orientation) => (
+                <button
+                  key={orientation}
+                  className={`mr-4 px-3 py-1 border rounded ${
+                    videoOrientation === orientation ? "bg-blue-500 text-white" : "bg-gray-100"
+                  }`}
+                  onClick={() => setVideoOrientation(orientation)}
+                >
+                  {orientation.charAt(0).toUpperCase() + orientation.slice(1)}
                 </button>
               ))}
             </div>
