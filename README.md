@@ -1,12 +1,10 @@
 # ConCreate - AI Content Creator Agent
 
 ## Inspiration
-A significant portion of video content today is created using stock footage and voiceovers, especially by independent content creators who lack the budget for animations or live shoots.
-
-YouTubers have reported that the content creation process, from ideation to scripting, curating footage, recordingvoiceovers, and editing, can take up to five hours for just a short five-minute video. We decided to completely automate this workflow using AI agent, empowering anyone to create high-quality content effortlessly in just minutes.
+A significant portion of video content today is created using stock footage and voiceovers, especially for independent content creators who lack the budget for animations or live shoots. Many YouTubers have reported that the entire content creation process, from ideation to scripting, curating footage, recording voiceovers, and editing, can take up to **five hours** for just a short **five-minute video**. We decided to completely automate this labor-intensive workflow with an AI agent, empowering anyone to effortlessly create high-quality video content in mere minutes.
 
 ## What it does
-ConCreate is an AI content creator agent that transforms an idea into a polished video in minutes.
+ConCreate is an AI content creator agent that transforms an idea into a polished video in just minutes.
 
 Powered by **OpenAI**'s GPT-4 and **ElevenLabs**'s text-to-speech models, ConCreate:
 - Expands the idea into a script based on the user’s desired video length.
@@ -15,7 +13,11 @@ Powered by **OpenAI**'s GPT-4 and **ElevenLabs**'s text-to-speech models, ConCre
 - Seamlessly edits everything into a **polished, ready-to-share video**.
 
 ## Technical implementation
-TODO
+ConCreate is a web application built with **Next.js** and **TypeScript**. The AI agent, powered by **OpenAI’s GPT-4**, orchestrates the entire process by handling:
+- Script Generation – Expanding user-provided ideas into structured, engaging video scripts of desired length.
+- Stock Footage Retrieval – Searching the **Pexels** API for the most relevant footage to match each script segment.
+- Voiceover Synthesis – Leveraging the **ElevenLabs** API to generate expressive, natural-sounding voiceovers.
+- Editing – Utilizing the **FFmpeg** package to intelligently trim and sequence stock footage, then synchronizing it with the generated voiceover to produce a polished video.
 
 ## Team information
 Our team consists of two members: Eric Xue and Doria Cai. Our contributions are as follows:
@@ -23,7 +25,7 @@ Our team consists of two members: Eric Xue and Doria Cai. Our contributions are 
  - **Doria Cai** – UX/UI design, frontend development
 
 ## What's next for ConCreate
-TODO
+We plan to introduce a text interface that allows users to interact with the AI agent throughout each step of the process. Users will be able to provide real-time feedback, enabling the agent to refine the script, voiceover, and footage selection accordingly. This will create a more personalized and fine-tuned content creation experience.
 
 ## Getting Started
 After cloning the repository, first create a file named `.env.local` in the root directory and add the following variables:
