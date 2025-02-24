@@ -1,7 +1,7 @@
 # ConCreate - AI Content Creator Agent
 
 ## Inspiration
-A significant portion of video content today is created using stock footage and voiceovers, especially for independent content creators who lack the budget for animations or live shoots. Many YouTubers have reported that the entire content creation process, from ideation to scripting, curating footage, recording voiceovers, and editing, can take up to **five hours** for just a short **five-minute video**. We decided to completely automate this labor-intensive workflow with an AI agent, empowering anyone to effortlessly create high-quality video content in mere minutes.
+A significant portion of video content today is created using just stock footage and human voiceovers, especially for independent content creators who lack the budget for animations or live shoots. Many YouTubers have reported that the entire content creation process, from ideation to scripting, curating footage, recording voiceovers, and editing, can take up to **five hours** for just a short **five-minute video**. We decided to completely automate this labor-intensive workflow with an AI agent, empowering anyone to effortlessly create high-quality video content in mere minutes.
 
 ## What it does
 ConCreate is an AI content creator agent that transforms an idea into a polished video in just minutes.
