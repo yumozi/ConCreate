@@ -362,7 +362,7 @@ export default function Home() {
               <a
                 href={finalVideoUrl}
                 download
-                 className="w-[158.425px] h-[49.617px] rounded-[174.09px] bg-[#4771F4] text-white text-lg font-medium flex-shrink-0 hover:bg-[#3659C9] transition flex items-center justify-center"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
               >
                 Download Video
               </a>
