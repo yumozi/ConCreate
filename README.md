@@ -30,6 +30,8 @@ We plan to introduce a text interface that allows users to interact with the AI 
 ## Getting Started
 After cloning the repository, first create a file named `.env.local` in the root directory and add the following variables:
 
+(WARNING: It seems like currently there is a bug causing the program to potentially spawn ffmpeg instances that won't automatically close upon closing the web app, and must be manually terminated)
+
 ```bash
 OPENAI_API_KEY=<your_openai_api_key>
 ELEVENLABS_API_KEY=<your_elevenlabs_api_key>
